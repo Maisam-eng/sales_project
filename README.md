@@ -147,4 +147,4 @@ project/
 
 ## Author
 Maisam AbuJaber
-Cosmetics Store Project - Web Development Course
+Cosmetics Store Project - DataBase Course
