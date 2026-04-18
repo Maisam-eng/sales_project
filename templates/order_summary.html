@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Summary</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #fdf6f9;
+            padding: 30px;
+        }
+        .summary-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 {
+            color: #aa336a;
+            text-align: center;
+        }
+        .order-details {
+            margin-top: 20px;
+        }
+        .product-line {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .total {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .info {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="summary-container">
+    <h1>Order Summary</h1>
+
+    <div class="info">
+        <p><strong>Order ID:</strong> {{ order_id }}</p>
+        <p><strong>Delivery Address:</strong> {{ address }}</p>
+        <p><strong>Branch ID:</strong> {{ branch_id }}</p>
+        <p><strong>Payment Method:</strong> {{ payment_method }}</p>
+    </div>
+
+    <div class="order-details">
+        <h3>Products:</h3>
+        {% for item in ordered_products %}
+            <div class="product-line">
+                {{ item.pname }} — {{ item.quantity }} × ${{ "%.2f"|format(item.price) }}
+            </div>
+        {% endfor %}
+        <div class="total">
+            Total: ${{ "%.2f"|format(total_price) }}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

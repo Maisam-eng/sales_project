@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Your Cart - Balqis Cosmetics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/images/background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #aa336a;
+        }
+
+        .cart-container {
+            background: rgba(255, 255, 255, 0.85);
+            margin: 40px auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(173, 62, 122, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #aa336a;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .cart-item img {
+            width: 100px;
+            height: auto;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        .item-info {
+            flex-grow: 1;
+            padding-left: 10px;
+        }
+
+        .item-info h3 {
+            margin: 0;
+        }
+
+        .item-info p {
+            margin: 5px 0;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-controls form {
+            display: inline;
+            margin: 0;
+        }
+
+        .quantity-controls button {
+            background-color: #aa336a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #8e2b58;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            background-color: #aa336a;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            float: right;
+        }
+
+        .checkout-btn:hover {
+            background-color: #8e2b58;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 60px;
+            clear: both;
+        }
+
+        .product-selection {
+            margin-top: 40px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .product-selection label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/products">Products</a>
+    <a href="/login">Login</a>
+    <a href="/cart">Cart</a>
+    <a href="/contact">Contact Us</a>
+</nav>
+
+<div class="cart-container">
+    <h1>Your Shopping Cart</h1>
+
+    {% if cart_items %}
+        {% for item in cart_items %}
+            <div class="cart-item">
+                <img src="https://via.placeholder.com/100x100" alt="{{ item.pname }}">
+                <div class="item-info">
+                    <h3>{{ item.pname }}</h3>
+                    <p>Price: ${{ "%.2f"|format(item.price) }}</p>
+                    <p>Quantity: {{ item.quantity }}</p>
+                </div>
+                <div class="quantity-controls">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="product_id" value="{{ item.product_id }}">
+                        <button type="submit" name="action" value="decrease">-</button>
+                    </form>
+
+                    <span>{{ item.quantity }}</span>
+
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="product_id" value="{{ item.product_id }}">
+                        <button type="submit" name="action" value="increase">+</button>
+                    </form>
+
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="product_id" value="{{ item.product_id }}">
+                        <button type="submit" name="action" value="delete">حذف</button>
+                    </form>
+                </div>
+                <div>
+                    <p><strong>${{ "%.2f"|format(item.price * item.quantity) }}</strong></p>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="total">
+            Total: ${{ "%.2f"|format(total_price) }}
+        </div>
+
+        <!-- Checkout form at the bottom -->
+        <form action="{{ url_for('checkout') }}" method="post">
+            <div class="product-selection">
+                <strong>Select products to order:</strong><br>
+                {% for item in cart_items %}
+                    <label>
+                        <input type="checkbox" name="product_ids" value="{{ item.product_id }}" checked>
+                        {{ item.pname }} - ${{ "%.2f"|format(item.price) }} × {{ item.quantity }}
+                    </label>
+                {% endfor %}
+            </div>
+            <button type="submit" class="checkout-btn">Proceed to Checkout</button>
+        </form>
+    {% else %}
+        <p style="text-align: center; font-size: 18px;">Your cart is empty.</p>
+    {% endif %}
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics. All rights reserved.</p>
+</div>
+
+</body>
+</html>

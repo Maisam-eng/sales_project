@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Fragrance Products | Balqis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff8f2;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/images/all.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        header {
+            background-color: #df97a9;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #aa336a;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            flex-direction: column;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+        }
+
+        .filters {
+            padding: 20px;
+            background-color: #fff0f5;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .filters form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="checkbox"], select, input[type="number"], button {
+            font-size: 15px;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        button {
+            padding: 10px 30px;
+            background-color: #df97a9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            align-self: center;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #aa336a;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(173, 62, 122, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            width: 250px;
+            height: 220px;
+            text-align: center;
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-card:hover {
+            transform: scale(1.03);
+        }
+
+        .product-card img {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Fragrance Products</h1>
+</header>
+
+<nav>
+    <a href="/"><span style="font-size: 16px;">&#8962;</span> Home</a>
+    <a href="/contact">Contact Us</a>
+    <a href="/logout">Logout</a>
+
+    <div class="dropdown">
+        <a href="#">Products ▾</a>
+        <div class="dropdown-content">
+            <a href="/products/haircare">Haircare</a>
+            <a href="/products/skincare">Skincare</a>
+            <a href="/products/fragrance">Fragrance</a>
+        </div>
+    </div>
+</nav>
+
+<div style="max-width: 600px; margin: 20px auto;">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}" style="padding:10px; margin-bottom:10px; border-radius:5px; background:#ffe0e0; color:#a00;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+</div>
+
+<div class="filters">
+    <form method="get">
+        <div class="filter-group">
+            <label><input type="checkbox" name="is_alcohol_free" value="1" {% if is_alcohol_free %}checked{% endif %}/> Alcohol Free</label>
+
+            <label for="fragrance_type">Fragrance Type:
+                <select name="fragrance_type">
+                    <option value="">--Any--</option>
+                    <option value="Eau de Parfum" {% if fragrance_type == 'Eau de Parfum' %}selected{% endif %}>Eau de Parfum</option>
+                    <option value="Eau de Toilette" {% if fragrance_type == 'Eau de Toilette' %}selected{% endif %}>Eau de Toilette</option>
+                </select>
+            </label>
+
+            <label for="concentration">Concentration:
+                <select name="concentration">
+                    <option value="">--Any--</option>
+                    <option value="High" {% if concentration == 'High' %}selected{% endif %}>High</option>
+                    <option value="Medium" {% if concentration == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="Light" {% if concentration == 'Light' %}selected{% endif %}>Light</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="filter-group">
+            <label for="size_ml">Max Size (ml):
+                <input type="number" name="size_ml" value="{{ size_ml or '' }}" step="1" />
+            </label>
+
+            <label for="lasting_hours">Min Lasting (hrs):
+                <input type="number" name="lasting_hours" value="{{ lasting_hours or '' }}" step="0.1" />
+            </label>
+        </div>
+
+        <div class="filter-group">
+            <label for="season">Season:
+                <select name="season">
+                    <option value="">--Any--</option>
+                    <option value="Summer" {% if season == 'Summer' %}selected{% endif %}>Summer</option>
+                    <option value="Winter" {% if season == 'Winter' %}selected{% endif %}>Winter</option>
+                    <option value="Spring" {% if season == 'Spring' %}selected{% endif %}>Spring</option>
+                    <option value="Fall" {% if season == 'Fall' %}selected{% endif %}>Fall</option>
+                </select>
+            </label>
+
+            <label for="recommended_time">Time:
+                <select name="recommended_time">
+                    <option value="">--Any--</option>
+                    <option value="Day" {% if recommended_time == 'Day' %}selected{% endif %}>Day</option>
+                    <option value="Night" {% if recommended_time == 'Night' %}selected{% endif %}>Night</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="filter-group">
+            <label for="scent_note">Scent Note:
+                <input type="text" name="scent_note" placeholder="e.g. Rose, Vanilla" />
+            </label>
+
+            <label for="gender">Gender:
+                <select name="gender">
+                    <option value="">--Any--</option>
+                    <option value="Unisex" {% if gender == 'Unisex' %}selected{% endif %}>Unisex</option>
+                    <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+                </select>
+            </label>
+        </div>
+
+        <div>
+            <button type="submit">Apply Filters</button>
+        </div>
+    </form>
+</div>
+
+<div class="product-grid">
+    {% for product in products %}
+    <a href="/product/{{ product.product_id }}" class="product-card">
+        <img src="https://via.placeholder.com/250x150" alt="{{ product.pname }}" />
+        <h3>{{ product.pname }}</h3>
+        <p>${{ product.price }}</p>
+        
+        {% if product.is_trending %}
+            <p style="color:#e91e63; font-weight: bold;">Trending</p>
+        {% endif %}
+        {% if product.num_of_purchases >= 100 %}
+            <p style="color:#4caf50; font-weight: bold;">Best Selling</p>
+        {% endif %}
+    </a>
+    {% endfor %}
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics</p>
+</div>
+
+</body>
+</html>

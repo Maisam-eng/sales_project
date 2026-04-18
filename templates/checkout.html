@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #fdf6f9;
+            padding: 30px;
+        }
+        .checkout-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 {
+            color: #aa336a;
+            text-align: center;
+        }
+        label.select-label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        select, input[type="text"], .payment-methods {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .payment-methods label {
+            display: block;
+            margin-top: 8px;
+        }
+        .checkout-btn {
+            background: #aa336a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 25px;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout-container">
+    <h1>Checkout</h1>
+
+    <form action="{{ url_for('finalize_checkout') }}" method="post">
+        <input type="hidden" name="product_ids" value="{{ ','.join(selected_product_ids) }}">
+        
+        <input type="hidden" name="customer_id" value="{{ customer_id }}">
+        <input type="hidden" name="customer_name" value="{{ customer_name }}">
+
+        <label class="select-label" for="branch">Select Branch:</label>
+        <select name="branch_id" id="branch" required>
+            <option value="" disabled selected>-- Select Branch --</option>
+            {% for branch in branches %}
+                <option value="{{ branch.branch_id }}">{{ branch.b_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label class="select-label" for="address">Enter Delivery Address:</label>
+        <input type="text" name="address" id="address" required placeholder="e.g. 123 Main St, Amman">
+
+        <label class="select-label">Address Type:</label>
+        <select name="address_type" required>
+            <option value="Home">Home</option>
+            <option value="Work">Work</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label class="select-label" for="employee">Assign Employee:</label>
+        <select name="employee_id" id="employee" required>
+            <option value="" disabled selected>-- Select Employee --</option>
+            {% for employee in employees %}
+                <option value="{{ employee.employee_id }}">{{ employee.employee_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label class="select-label">Payment Method:</label>
+        <div class="payment-methods">
+            <label><input type="radio" name="payment_method" value="Credit Card" required> Credit Card</label>
+            <label><input type="radio" name="payment_method" value="Cash"> Cash</label>
+            <label><input type="radio" name="payment_method" value="Other"> Other</label>
+        </div>
+
+        {% for pid in selected_product_ids %}
+            <input type="hidden" name="product_ids" value="{{ pid }}">
+        {% endfor %}
+
+        <button type="submit" class="checkout-btn">Place Order</button>
+    </form>
+</div>
+
+</body>
+</html>

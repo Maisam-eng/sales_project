@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Haircare Products | Balqis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff8f2;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/images/all.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        header, .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #aa336a;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            flex-direction: column;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+        }
+
+        .filters {
+            padding: 20px;
+            background-color: #fff0f5;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .filters form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="checkbox"], select, input[type="number"], button {
+            font-size: 15px;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #df97a9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #aa336a;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        a.product-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(173, 62, 122, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            width: 250px;
+            height: 220px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-card h3 {
+            margin: 10px 0 5px;
+            color: #aa336a;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Haircare Products</h1>
+    </header>
+
+    <nav>
+        <a href="/"><span style="font-size: 16px;">&#8962;</span> Home</a>
+        <a href="/contact">Contact Us</a>
+        <a href="/logout">Logout</a>
+
+        <div class="dropdown">
+            <a href="#">Products ▾</a>
+            <div class="dropdown-content">
+                <a href="/products/haircare">Haircare</a>
+                <a href="/products/skincare">Skincare</a>
+                <a href="/products/fragrance">Fragrance</a>
+            </div>
+        </div>
+    </nav>
+    <div style="max-width: 600px; margin: 20px auto;">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}" style="padding:10px; margin-bottom:10px; border-radius:5px; background:#ffe0e0; color:#a00;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+</div>
+    <div class="filters">
+        <form method="get">
+
+            <div class="filter-group">
+                <label><input type="checkbox" name="trending" value="1" {% if trending %}checked{% endif %}> Trending Only</label>
+                <label><input type="checkbox" name="best_selling" value="1" {% if best_selling %}checked{% endif %}> Best Selling Only</label>
+                <label><input type="checkbox" name="natural_or_organic" value="1" {% if natural_or_organic %}checked{% endif %}> Natural or Organic</label>
+                <label><input type="checkbox" name="fragrance_free" value="1" {% if fragrance_free %}checked{% endif %}> Fragrance Free</label>
+                <label><input type="checkbox" name="sulfate_free" value="1" {% if sulfate_free %}checked{% endif %}> Sulfate Free</label>
+            </div>
+
+            <div class="filter-group">
+                <label for="max_price">Max Price:</label>
+                <input type="number" id="max_price" name="max_price" value="{{ max_price or '' }}" step="0.01" />
+            </div>
+
+            <div class="filter-group">
+                <label>Hair Type:
+                    <select name="hair_type">
+                        <option value="">-- Any --</option>
+                        <option value="Curly" {% if hair_type == 'Curly' %}selected{% endif %}>Curly</option>
+                        <option value="Straight" {% if hair_type == 'Straight' %}selected{% endif %}>Straight</option>
+                        <option value="Wavy" {% if hair_type == 'Wavy' %}selected{% endif %}>Wavy</option>
+                        <option value="Coily" {% if hair_type == 'Coily' %}selected{% endif %}>Coily</option>
+                    </select>
+                </label>
+
+                <label>Scalp Type:
+                    <select name="scalp_type">
+                        <option value="">-- Any --</option>
+                        <option value="Dry" {% if scalp_type == 'Dry' %}selected{% endif %}>Dry</option>
+                        <option value="Oily" {% if scalp_type == 'Oily' %}selected{% endif %}>Oily</option>
+                        <option value="Normal" {% if scalp_type == 'Normal' %}selected{% endif %}>Normal</option>
+                        <option value="Sensitive" {% if scalp_type == 'Sensitive' %}selected{% endif %}>Sensitive</option>
+                    </select>
+                </label>
+            </div>
+
+            <div>
+                <button type="submit">Apply Filters</button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <a href="/product/{{ product.product_id }}" class="product-link">
+            <div class="product-card">
+                <img src="https://via.placeholder.com/250x150" alt="{{ product.pname }}">
+                <h3>{{ product.pname }}</h3>
+                <p>${{ product.price }}</p>
+                {% if product.is_trending %}
+                    <p style="color:#e91e63;"><strong>Trending</strong></p>
+                {% endif %}
+                {% if product.num_of_purchases >= 100 %}
+                    <p style="color:#4caf50;"><strong>Best Selling</strong></p>
+                {% endif %}
+        
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Balqis Cosmetics</p>
+    </div>
+
+</body>
+</html>

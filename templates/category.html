@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category_name }} Products</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff8f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #df97a9;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #aa336a;
+        }
+
+        .filters {
+            padding: 20px;
+            text-align: center;
+            background-color: #fff0f5;
+            border-bottom: 1px solid #ccc;
+        }
+
+        input[type="number"], input[type="checkbox"], button {
+            margin: 8px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .section h2 {
+            text-align: center;
+            color: #aa336a;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+             transform : transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>{{ category_name }} Products</h1>
+</header>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/products">All Products</a>
+    <a href="/products/skincare.html">Skincare</a>
+    <a href="/products/haircare">Haircare</a>
+    <a href="/products/fragrance">Fragrance</a>
+
+</a>
+
+</nav>
+
+<div class="filters">
+    <form method="get">
+        <label>Max Price:
+            <input type="number" name="max_price" value="{{ max_price or '' }}">
+        </label>
+
+        <label>
+            <input type="checkbox" name="trending" value="1" {% if trending %}checked{% endif %}>
+            Trending Only
+        </label>
+
+        <label>
+            <input type="checkbox" name="best_selling" value="1" {% if best_selling %}checked{% endif %}>
+            Best Selling Only
+        </label>
+
+        <button type="submit">Filter</button>
+    </form>
+</div>
+
+
+<div class="product-grid">
+    {% for product in products %}
+    <a href="/product/{{ product.product_id }}" style="text-decoration: none; color: inherit;">
+        <div class="product-card">
+            <img src="https://via.placeholder.com/250x150" alt="{{ product.pname }}">
+            <h3>{{ product.pname }}</h3>
+            <p>${{ product.price }}</p>
+            <p>Purchases: {{ product.num_of_purchases }}</p>
+            {% if product.is_trending %}
+                <p style="color:#e91e63; font-weight: bold;">Trending</p>
+            {% endif %}
+            {% if product.num_of_purchases >= 100 %}
+                <p style="color:#4caf50; font-weight: bold;">Best Selling</p>
+            {% endif %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics</p>
+</div>
+
+</body>
+</html>

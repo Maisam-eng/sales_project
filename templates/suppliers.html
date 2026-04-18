@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Suppliers</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/images/manager.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #f5b8d5;
+        }
+
+        .dashboard {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .dashboard h1 {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #d577e5;
+            margin-bottom: 30px;
+            padding: 10px 30px;
+            border-radius: 10px;
+        }
+
+        .filter-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            border-radius: 10px;
+        }
+
+        .filter-form label {
+            font-weight: bold;
+            color: #d577e5;
+        }
+
+        .filter-form input {
+            padding: 8px;
+            margin: 0 10px 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 250px;
+        }
+
+        .filter-form button {
+            padding: 10px 20px;
+            background-color: #d577e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .filter-form button:hover {
+            background-color: #b857c4;
+        }
+
+        .supplier-list {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: left;
+            color: #7b2fa2;
+        }
+
+        .supplier-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .supplier-list th,
+        .supplier-list td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .supplier-list th {
+            background-color: #d577e5;
+            color: white;
+            text-align: left;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/manager/home">Dashboard</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="dashboard">
+    <h1>Suppliers</h1>
+
+    <form method="get" class="filter-form">
+        <label>Company Name:
+            <input type="text" name="company_name" placeholder="Search by company" value="{{ company_filter or '' }}">
+        </label>
+        <button type="submit">Apply Filters</button>
+    </form>
+
+    <div class="supplier-list">
+        {% if suppliers %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Supplier ID</th>
+                    <th>Company Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for supplier in suppliers %}
+                <tr>
+                    <td>{{ supplier.supplier_id }}</td>
+                    <td>{{ supplier.company_name }}</td>
+                    <td>{{ supplier.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No suppliers found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Sales Management System</p>
+</div>
+
+</body>
+</html>

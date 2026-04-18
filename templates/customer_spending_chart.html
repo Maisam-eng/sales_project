@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Customer Spending Chart - Balqis Cosmetics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #fff0f5; margin: 0; padding: 0; }
+        nav { background-color: #f4c2c2; display: flex; justify-content: center; padding: 10px; }
+        nav a { color: #333; text-decoration: none; margin: 0 15px; font-weight: bold; }
+        nav a:hover { color: #d577e5; }
+        .container { padding: 20px 15px; max-width: 600px; margin: 0 auto; text-align: center; }
+        h1 { color: #d577e5; font-size: 1.5rem; margin-bottom: 15px; }
+        canvas { width: 100%; height: 300px; max-height: 300px; }
+        .footer { background-color: #df97a9; color: white; text-align: center; padding: 15px; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/customer_orders">My Orders</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="container">
+    <h1>Customer Spending Chart</h1>
+    <canvas id="spendingChart"></canvas>
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics. All rights reserved.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const customerNames = {{ customer_names | tojson }};
+    const spendingData = {{ spending_amounts | tojson }};
+
+    const ctx = document.getElementById('spendingChart').getContext('2d');
+
+    function calculateStepSize(maxValue) {
+        if (maxValue <= 10) return 1;
+        if (maxValue <= 50) return 5;
+        if (maxValue <= 100) return 10;
+        if (maxValue <= 500) return 50;
+        return Math.ceil(maxValue / 10);
+    }
+
+    const maxSpending = Math.max(...spendingData);
+    const stepSize = calculateStepSize(maxSpending);
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: customerNames,
+            datasets: [{
+                label: 'Total Spending ($)',
+                data: spendingData,
+                backgroundColor: 'rgba(213, 119, 229, 0.7)',
+                borderColor: 'rgba(213, 119, 229, 1)',
+                borderWidth: 1,
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: stepSize,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

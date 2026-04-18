@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Orders - Balqis Cosmetics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff0f5;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #d577e5;
+        }
+        .container {
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, p {
+            text-align: center;
+            color: #d577e5;
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+        }
+        .chart-btn {
+            background-color: #d577e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .chart-btn:hover {
+            background-color: #aa336a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8d0e2;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/customer_orders">My Orders</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="header-flex">
+    <h1>My Orders</h1>
+    <button class="chart-btn" id="showChartBtn">Show Spending Chart</button>
+</div>
+
+<div class="container">
+    <p>Total Orders: {{ orders_summary.orders_count if orders_summary else 0 }}</p>
+
+    <h2>Recent Orders</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Status</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.order_id }}</td>
+                <td>{{ order.order_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ order.status }}</td>
+                <td>${{ '%.2f'|format(order.total_amount) }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">No orders found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics. All rights reserved.</p>
+</div>
+
+<script>
+    document.getElementById("showChartBtn").addEventListener("click", function() {
+        window.location.href = "/customer_spending_chart";  
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Stock by Branch - Balqis Cosmetics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/images/manager.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            color: #333;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #f5b8d5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #d577e5;
+            margin-bottom: 30px;
+        }
+
+        .filter-form {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .filter-form select {
+            font-size: 16px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .filter-form button {
+            font-size: 16px;
+            padding: 6px 14px;
+            margin-left: 10px;
+            background-color: #d577e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .filter-form button:hover {
+            background-color: #bb5ec9;
+        }
+
+        .branch {
+            margin-bottom: 40px;
+        }
+
+        .branch h2 {
+            background-color: #f4c2c2;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #d577e5;
+            color: white;
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            width: 110px;
+        }
+
+        .InStock {
+            background-color: #4CAF50;
+        }
+
+        .LowStock {
+            background-color: #ff9800;
+        }
+
+        .OutOfStock {
+            background-color: #f44336;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/manager/home">Dashboard</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="container">
+    <h1>Stock by Branch</h1>
+
+    <form method="get" action="/branches" class="filter-form">
+        <label for="filter">Filter by Stock Status:</label>
+        <select name="filter" id="filter">
+            <option value="all" {% if filter_type == 'all' %}selected{% endif %}>All Info</option>
+            <option value="low_stock" {% if filter_type == 'low_stock' %}selected{% endif %}>Low Stock Product (&lt; 20)</option>
+            <option value="out_of_stock" {% if filter_type == 'out_of_stock' %}selected{% endif %}>Out of Stock< Product </option>
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+
+    {% for branch_id, branch in branches.items() %}
+    <div class="branch">
+        <h2>{{ branch.branch_name }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for product in branch.products %}
+                <tr>
+                    <td>{{ product.product_id }}</td>
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>
+                        <span class="status 
+                            {% if product.status == 'In Stock' %}InStock{% elif product.status == 'Low Stock' %}LowStock{% else %}OutOfStock{% endif %}
+                        ">
+                            {{ product.status }}
+                        </span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+     {% if filter_type == 'all' and branch.employees %}
+    <h3 style="margin-top: 30px;">Employees</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Hire Date</th>
+            <th>Hours/Week</th>
+            <th>Manager</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for emp in branch.employees %}
+        <tr>
+            <td>{{ emp.employee_id }}</td>
+            <td>{{ emp.employee_name }}</td>
+            <td>{{ emp.employee_role }}</td>
+            <td>{{ emp.hire_date }}</td>
+            <td>{{ emp.working_hours_per_week }}</td>
+            <td>{{ "Yes" if emp.is_manager else "No" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics. All rights reserved.</p>
+</div>
+
+</body>
+</html>

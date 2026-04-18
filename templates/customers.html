@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Customers - Balqis Cosmetics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff0f5;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #d577e5;
+        }
+        .container {
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #d577e5;
+        }
+        .filters {
+            padding: 20px;
+            background-color: #fce4ec;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .filters form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .filter-grid label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            color: #444;
+        }
+        .filter-grid input,
+        .filter-grid select {
+            margin-top: 6px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+        .filter-submit {
+            text-align: center;
+        }
+        .filters button {
+            padding: 12px 30px;
+            background-color: #d577e5;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+        .filters button:hover {
+            background-color: #aa336a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8d0e2;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+        #charts-container {
+            width: 90%;
+            max-width: 900px;
+            margin: 60px auto 40px auto;
+            background: #fce4ec;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px #d577e530;
+        }
+        #charts-container h2 {
+            text-align: center;
+            color: #d577e5;
+            margin-bottom: 25px;
+        }
+        canvas {
+            margin-bottom: 40px;
+            max-height: 350px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/manager/home">Dashboard</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <h1>Customer List</h1>
+        <button id="showChartBtn" style="
+            background-color: #d577e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 10px;
+        ">Show Spending Chart</button>
+    </div>
+
+    <div class="filters">
+        <form method="get" id="filterForm">
+            <div class="filter-grid">
+                <label>Customer ID:
+                    <input type="number" name="customer_id" min="0" value="{{ request.args.get('customer_id', '') }}" />
+                </label>
+                <label>Full Name:
+                    <input type="text" name="cname" value="{{ request.args.get('cname', '') }}" />
+                </label>
+                <label>Gender:
+                    <select name="gender">
+                        <option value="">--Any--</option>
+                        <option value="M" {% if request.args.get('gender') == 'M' %}selected{% endif %}>Male</option>
+                        <option value="F" {% if request.args.get('gender') == 'F' %}selected{% endif %}>Female</option>
+                    </select>
+                </label>
+                <label>Date of Birth:
+                    <input type="date" name="date_of_birth" value="{{ request.args.get('date_of_birth', '') }}" />
+                </label>
+                <label>Top N by Spending:
+                    <input type="number" name="top_n" min="1" placeholder="e.g. 5" value="{{ request.args.get('top_n', '') }}" />
+                </label>
+                <label>Inactive Since:
+                    <input type="date" name="inactive_since" value="{{ request.args.get('inactive_since', '') }}" />
+                </label>
+            </div>
+            <div class="filter-submit">
+                <button type="submit">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th>Last Order Date</th>
+                {% if customers and customers[0].get('total_spending') is not none %}
+                <th>Total Spending</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.customer_id }}</td>
+                <td>{{ customer.cname }}</td>
+                <td>{{ 'Male' if customer.gender == 'M' else 'Female' }}</td>
+                <td>{{ customer.date_of_birth }}</td>
+                <td>
+                    {% if customer.last_order_date %}
+                        {{ customer.last_order_date.strftime('%Y-%m-%d') }}
+                    {% else %}
+                        No orders
+                    {% endif %}
+                </td>
+                {% if customer.get('total_spending') is not none %}
+                <td>{{ customer.total_spending | round(2) }}$</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Chart Container -->
+<div id="charts-container" style="display:none;">
+    <h2>Customer Analytics</h2>
+
+    <canvas id="barChart" aria-label="All customers by spending" role="img"></canvas>
+
+    <canvas id="pieChartSpendingGender" aria-label="Spending distribution by gender" role="img"></canvas>
+
+    <canvas id="pieChartSpendingAge" aria-label="Spending distribution by age group" role="img"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.getElementById("showChartBtn").addEventListener("click", function() {
+        const chartsContainer = document.getElementById("charts-container");
+        chartsContainer.style.display = chartsContainer.style.display === "none" ? "block" : "none";
+        this.textContent = chartsContainer.style.display === "block" ? "Hide Charts" : "Show Charts";
+    });
+
+    const labels = {{ labels|tojson }};
+    const values = {{ values|tojson }};
+
+    const genderLabels = {{ gender_spend_labels|tojson }};
+    const genderTotals = {{ gender_spend_totals|tojson }};
+
+    const ageLabels = {{ age_labels|tojson }};
+    const ageTotals = {{ age_totals|tojson }};
+
+    // Bar Chart: All customers and their spending
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Spending',
+                data: values,
+                backgroundColor: '#a974eb'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'All Customers by Total Spending' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Pie Chart: Spending by Gender
+    new Chart(document.getElementById('pieChartSpendingGender'), {
+        type: 'pie',
+        data: {
+            labels: genderLabels,
+            datasets: [{
+                label: 'Spending',
+                data: genderTotals,
+                backgroundColor: ['#ff99cc', '#d577e5']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: { display: true, text: 'Spending by Gender' }
+            }
+        }
+    });
+
+    // Pie Chart: Spending by Age Group
+    new Chart(document.getElementById('pieChartSpendingAge'), {
+        type: 'pie',
+        data: {
+            labels: ageLabels,
+            datasets: [{
+                label: 'Spending',
+                data: ageTotals,
+                backgroundColor: ['#f48fb1', '#ce93d8', '#b39ddb']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: { display: true, text: 'Spending by Age Group' }
+            }
+        }
+    });
+</script>
+
+<script>
+    document.getElementById("filterForm").addEventListener("submit", function (e) {
+        const customerId = parseInt(document.querySelector('input[name="customer_id"]').value);
+        const topN = parseInt(document.querySelector('input[name="top_n"]').value);
+        const inactiveSince = document.querySelector('input[name="inactive_since"]').value;
+        let errorMsg = '';
+
+        if (!isNaN(customerId) && customerId < 0) {
+            errorMsg += "Customer ID must be a non-negative number.\n";
+        }
+        if (!isNaN(topN) && topN < 1) {
+            errorMsg += "Top N by Spending must be greater than 0.\n";
+        }
+        if (inactiveSince && isNaN(Date.parse(inactiveSince))) {
+            errorMsg += "Please enter a valid Inactive Since date.\n";
+        }
+
+        if (errorMsg) {
+            e.preventDefault();
+            alert(errorMsg);
+        }
+    });
+</script>
+
+</body>
+</html>

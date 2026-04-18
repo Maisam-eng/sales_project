@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Products</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff0f5;
+            margin: 0;
+            padding: 50px; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            margin: -50px -50px 30px -50px; 
+        }
+
+        .topbar a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+
+        .topbar a:hover {
+            color: #d577e5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;  
+            padding: 20px;     
+            flex-grow: 1;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #d577e5;
+        }
+form {
+    background-color: #fce4ec;
+    padding: 25px 30px; 
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 8px rgba(213, 115, 229, 0.3); 
+}
+
+form input, form select {
+    width: 100%;
+    padding: 12px 10px; 
+    margin-top: 8px; 
+    margin-bottom: 18px;
+    border-radius: 7px; 
+    border: 1.5px solid #d577e5; 
+    transition: border-color 0.3s ease;
+}
+
+form input:focus, form select:focus {
+    outline: none;
+    border-color: #aa336a; 
+    box-shadow: 0 0 5px #aa336a;
+}
+
+form label {
+    font-weight: 600;
+    color: #d577e5; 
+
+}
+
+
+form button {
+    background-color: #d577e5;
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 12px 26px; 
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.15s ease;
+    margin-right: 12px;
+    box-shadow: 0 2px 5px rgba(213, 115, 229, 0.4);
+}
+
+form button:hover {
+    background-color: #aa336a;
+    transform: scale(1.05); 
+}
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 16px; 
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8d0e2;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .section {
+            margin-top: 50px;
+        }
+
+        footer {
+            background-color: #f4c2c2;
+            text-align: center;
+            padding: 15px 20px;
+            margin-top: auto;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+         <a href="/">Home</a>
+        <a href="/manager/home">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="container">
+
+        <h1>Manage Products</h1>
+                {% if message %}
+        <div style="background-color:#e0ffe0; color:#006400; padding:12px; border:1px solid #90ee90; border-radius:8px; margin: 20px 0; text-align:center;">
+            {{ message }}
+        </div>
+        {% endif %}
+        <form method="POST">
+            <h2>Add / Update / Delete Product</h2>
+            <label>Product ID: <input type="text" name="product_id" required></label><br>
+            <label>Name: <input type="text" name="pname"></label><br>
+            <label>Price: <input type="number" step="0.01" name="price"></label><br>
+            <label>Number of Purchases: <input type="number" name="num_of_purchases"></label><br>
+            <label>Is Trending: <input type="checkbox" name="is_trending"></label><br>
+            <label>Category:
+                <select name="category_name">
+                    <option value="Fragrance">Fragrance</option>
+                    <option value="Skincare">Skincare</option>
+                    <option value="Haircare">Haircare</option>
+                </select>
+            </label><br><br>
+            <button type="submit" name="action" value="Insert">Insert</button>
+            <button type="submit" name="action" value="Update">Update</button>
+            <button type="submit" name="action" value="Delete">Delete</button>
+        </form>
+
+        <h2>All Products</h2>
+        <table>
+            <tr>
+                <th>ID</th><th>Name</th><th>Price</th><th>Purchases</th><th>Trending</th><th>Category</th>
+            </tr>
+            {% for p in all_products %}
+            <tr>
+                <td>{{ p.product_id }}</td>
+                <td>{{ p.pname }}</td>
+                <td>{{ p.price }}</td>
+                <td>{{ p.num_of_purchases }}</td>
+                <td>{{ "Yes" if p.is_trending else "No" }}</td>
+                <td>{{ p.category_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Trending Products</h2>
+        <table>
+            <tr>
+                <th>ID</th><th>Name</th><th>Price</th><th>Purchases</th><th>Trending</th><th>Category</th>
+            </tr>
+            {% for p in trending_products %}
+            <tr>
+                <td>{{ p.product_id }}</td>
+                <td>{{ p.pname }}</td>
+                <td>{{ p.price }}</td>
+                <td>{{ p.num_of_purchases }}</td>
+                <td>{{ "Yes" if p.is_trending else "No" }}</td>
+                <td>{{ p.category_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Highest Rated Products</h2>
+        <table>
+            <tr><th>ID</th><th>Name</th><th>Price</th><th>Avg Rating</th></tr>
+            {% for p in highest_rated %}
+            <tr>
+                <td>{{ p.product_id }}</td>
+                <td>{{ p.pname }}</td>
+                <td>{{ p.price }}</td>
+                <td>{{ "%.2f"|format(p.avg_rating) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Most Reviewed Products</h2>
+        <table>
+            <tr><th>ID</th><th>Name</th><th>Price</th><th>Review Count</th></tr>
+            {% for p in most_reviewed %}
+            <tr>
+                <td>{{ p.product_id }}</td>
+                <td>{{ p.pname }}</td>
+                <td>{{ p.price }}</td>
+                <td>{{ p.review_count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Least Selling Products</h2>
+        <table>
+            <tr><th>ID</th><th>Name</th><th>Price</th><th>Total Sold</th></tr>
+            {% for p in least_selling %}
+            <tr>
+                <td>{{ p.product_id }}</td>
+                <td>{{ p.pname }}</td>
+                <td>{{ p.price }}</td>
+                <td>{{ p.total_sold }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Best Performing Category</h2>
+        {% if best_category %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Total Purchases</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ best_category.category_name }}</td>
+                    <td>{{ best_category.total_sales }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <p>No data available</p>
+        {% endif %}
+
+        <h2>Worst Performing Category</h2>
+        {% if worst_category %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Total Purchases</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ worst_category.category_name }}</td>
+                    <td>{{ worst_category.total_sales }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <p>No data available</p>
+        {% endif %}
+    </div>
+
+    <footer>
+        &copy; 2025 My Cosmetics Store. All rights reserved.
+    </footer>
+</body>
+</html>

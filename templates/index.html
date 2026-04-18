@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Balqis Cosmetics Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+   body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('/static/images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #aa336a;
+        }
+
+        .hero {
+            background-image: url('https://images.unsplash.com/photo-1587574293340-fef6f6c4fc4b');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-shadow: 1px 1px 3px #000;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 18px;
+        }
+
+        .trending {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .trending h2 {
+            margin-bottom: 20px;
+            color: #aa336a;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(173, 62, 122, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            width: 250px;
+            transition: transform 0.2s;
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: scale(1.03);
+        }
+
+        .product-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/products">Products</a>
+    <a href="/login">Login</a>
+    <a href="/cart">Cart</a>
+    <a href="/contact">Contact Us</a>
+    <a href="/logout">Logout</a>
+
+</nav>
+
+<div class="hero">
+    <h1>Welcome to Balqis</h1>
+    <p>Explore the best in skincare, haircare, and fragrances</p>
+</div>
+
+<div class="trending">
+    <h2>🔥 Trending Products</h2>
+    <div class="product-grid">
+        {% for product in trending %}
+        <a href="/product/{{ product.product_id }}" style="text-decoration: none; color: inherit;">
+            <div class="product-card">
+                <img src="https://via.placeholder.com/250x150" alt="{{ product.pname }}">
+                <h3>{{ product.pname }}</h3>
+                <p>${{ product.price }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="trending">
+    <h2>🏆 Best Selling Products</h2>
+    <div class="product-grid">
+        {% for product in best_selling %}
+        <a href="/product/{{ product.product_id }}" style="text-decoration: none; color: inherit;">
+            <div class="product-card">
+                <img src="https://via.placeholder.com/250x150" alt="{{ product.pname }}">
+                <h3>{{ product.pname }}</h3>
+                <p>${{ product.price }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics. All rights reserved.</p>
+</div>
+
+</body>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Products | Balqis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff8f2;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/images/all.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+}
+
+
+        header {
+            background-color: #df97a9;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #aa336a;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #ffe6e6;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f2b6c0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .filters {
+            padding: 20px;
+            text-align: center;
+            background-color: #fff0f5;
+            border-bottom: 1px solid #ccc;
+        }
+
+        input[type="number"], input[type="checkbox"], button {
+            margin: 8px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(173, 62, 122, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            width: 250px;
+            height: 220px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: scale(1.03);
+        }
+
+        .product-card img {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>All Products</h1>
+</header>
+   
+<nav>
+    <a href="/"><span style="font-size: 16px;">&#8962;</span> Home</a>
+    <a href="/contact">Contact Us</a>
+
+    <a href="/logout">Logout</a>
+
+    <div class="dropdown">
+        <a href="#">Products ▾</a>
+        <div class="dropdown-content">
+            <a href="/products/haircare">Haircare</a> 
+            <a href="/products/skincare">Skincare</a>
+            <a href="/products/fragrance">Fragrance</a>
+        </div>
+    </div>
+</nav>
+
+<div style="max-width: 600px; margin: 20px auto;">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}" style="padding:10px; margin-bottom:10px; border-radius:5px; background:#ffe0e0; color:#a00;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+</div>
+<div class="filters">
+    <form method="get">
+        <label>Max Price:
+            <input type="number" name="max_price" value="{{ max_price or '' }}">
+        </label>
+
+        <label>
+            <input type="checkbox" name="trending" value="1" {% if trending %}checked{% endif %}>
+            Trending Only
+        </label>
+
+        <label>
+            <input type="checkbox" name="best_selling" value="1" {% if best_selling %}checked{% endif %}>
+            Best Selling Only
+        </label>
+
+        <button type="submit">Filter</button>
+    </form>
+</div>
+
+<div class="product-grid">
+    {% for product in products %}
+    <a href="/product/{{ product.product_id }}" style="text-decoration: none; color: inherit;">
+        <div class="product-card">
+            <img src="https://via.placeholder.com/250x150" alt="{{ product.pname }}">
+            <h3>{{ product.pname }}</h3>
+            <p>${{ product.price }}</p>
+            {% if product.is_trending %}
+                <p style="color:#e91e63; font-weight: bold;">Trending</p>
+            {% endif %}
+            {% if product.num_of_purchases >= 100 %}
+                <p style="color:#4caf50; font-weight: bold;">Best Selling</p>
+            {% endif %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics</p>
+</div>
+
+</body>
+</html>

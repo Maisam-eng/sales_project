@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Dashboard - Balqis Cosmetics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/images/manager.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        nav {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #f5b8d5;
+        }
+
+        .dashboard {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .dashboard h1 {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.7); 
+            color: #d577e5;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-buttons a {
+            display: block;
+            padding: 20px;
+            font-size: 1.3rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #d577e5;
+            border: 2px solid #d577e5;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-buttons a:hover {
+            background-color: #d577e5;
+            color: white;
+            transform: scale(1.03);
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/products">Products</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="dashboard">
+    <h1>Manager Dashboard</h1>
+    <div class="dashboard-buttons">
+        <a href="{{ url_for('customers') }}">Manage Customers</a>
+        <a href="{{ url_for('employees') }}">Manage Employees</a>
+        <a href="{{ url_for('manage_products') }}">Manage Products</a>
+        <a href="{{ url_for('branches') }}">Manage Branches</a>
+        <a href="{{ url_for('orders') }}">Manage Orders</a>
+        <a href="{{ url_for('suppliers') }}">Manage Suppliers</a>  
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Balqis Cosmetics. All rights reserved.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff0f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top navigation bar */
+        .topbar {
+            background-color: #f4c2c2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .topbar a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+
+        .topbar a:hover {
+            color: #d577e5;
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #d577e5;
+        }
+
+        .filters {
+            padding: 20px;
+            background-color: #fce4ec;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .filters form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-grid label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .filter-grid input,
+        .filter-grid select {
+            margin-top: 6px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        .filter-submit {
+            text-align: center;
+        }
+
+        .filters button {
+            padding: 12px 30px;
+            background-color: #d577e5;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .filters button:hover {
+            background-color: #aa336a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8d0e2;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .footer {
+            background-color: #df97a9;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="topbar">
+        <a href="/">Home</a>
+        <a href="/manager/home">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <div class="container">
+        <h1>Employee List</h1>
+
+        <div class="filters">
+            <form method="post">
+                <div class="filter-grid">
+                    <label>
+                        Filter by Sales Greater Than:
+                        <input type="number" name="min_sales" placeholder="e.g. 1000">
+                    </label>
+
+                    <label>
+                        Filter by Working Hours Greater Than:
+                        <input type="number" name="min_hours" placeholder="e.g. 40">
+                    </label>
+
+                    <label>
+                        Filter by Working Hours Less Than:
+                        <input type="number" name="max_hours" placeholder="e.g. 30">
+                    </label>
+
+                    <label>
+                        Top Seller:
+                        <select name="top_seller">
+                            <option value="">-- Select --</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="filter-submit">
+                    <button type="submit">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Branch</th>
+                    <th>Working Hours/Week</th>
+                    <th>Total Sales</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td>{{ emp.employee_id }}</td>
+                    <td>{{ emp.employee_name }}</td>
+                    <td>{{ emp.employee_role }}</td>
+                    <td>{{ emp.branch_name }}</td>
+                    <td>{{ emp.working_hours_per_week }}</td>
+                    <td>{{ emp.total_sales or 0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 style="text-align:center; color:#d577e5; margin-top:50px;">Employee Data Visualization</h3>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 30px; margin-top: 30px;">
+        <div style="flex: 1; min-width: 300px;">
+            <h4 style="text-align:center;">Sales per Employee</h4>
+            <canvas id="salesChart"></canvas>
+        </div>
+        <div style="flex: 1; min-width: 300px;">
+            <h4 style="text-align:center;">Working Hours Distribution</h4>
+            <canvas id="hoursChart"></canvas>
+        </div>
+        <div style="flex: 1; min-width: 300px;">
+            <h4 style="text-align:center;">Sales vs. Hours</h4>
+            <canvas id="scatterChart"></canvas>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025. All rights reserved.
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        const names = {{ names | safe }};
+        const sales = {{ sales | safe }};
+        const hours = {{ hours | safe }};
+
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: names,
+                datasets: [{
+                    label: 'Total Sales',
+                    data: sales,
+                    backgroundColor: '#d577e5'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const hoursCtx = document.getElementById('hoursChart').getContext('2d');
+        new Chart(hoursCtx, {
+            type: 'pie',
+            data: {
+                labels: names,
+                datasets: [{
+                    label: 'Working Hours',
+                    data: hours,
+                    backgroundColor: [
+                        '#f8d0e2', '#f4c2c2', '#f2a2b2', '#e5b5d9', '#d577e5',
+                        '#faaccb', '#fab0b5', '#ddbdfc', '#ffc3a0', '#f7d6e0'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        const scatterCtx = document.getElementById('scatterChart').getContext('2d');
+        const scatterData = names.map((name, i) => ({
+            x: hours[i],
+            y: sales[i],
+            label: name
+        }));
+        new Chart(scatterCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Sales vs. Hours',
+                    data: scatterData,
+                    backgroundColor: '#aa336a'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const point = scatterData[context.dataIndex];
+                                return `${point.label}: ${point.x} hrs, $${point.y}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Working Hours'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Total Sales'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

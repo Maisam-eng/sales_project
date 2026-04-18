@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.pname }} - Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fdf2ff;
+    margin: 0;
+    padding: 0;
+    background-image: url('/static/images/all.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: #4a2a42; 
+}
+
+.container {
+    max-width: 700px;         
+    margin: 40px auto;        
+    padding: 40px 60px;       
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(173, 62, 122, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(173, 62, 122, 0.25);
+    color: #4a2a42;
+    text-align: left;         
+}
+
+
+h1 {
+    color: #aa336a;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+
+}
+
+h2 {
+    color: #aa336a;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #df97a9;
+    padding-bottom: 5px;
+    
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+ul {
+    list-style: none;
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+ul li::before {
+    content: "• ";
+    color: #df97a9;
+    font-weight: bold;
+    margin-right: 8px;
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+form label {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="number"] {
+    width: 60px;
+    padding: 6px 8px;
+    font-size: 16px;
+    border: 1.5px solid #df97a9;
+    border-radius: 5px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.button {
+    background-color: #df97a9;
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.button:hover {
+    background-color: #c86d8a;
+}
+form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+form > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+form label {
+    font-size: 18px;
+    margin: 0;
+}
+
+form input[type="number"] {
+    width: 60px;
+    padding: 6px 8px;
+    font-size: 16px;
+    border: 1.5px solid #df97a9;
+    border-radius: 5px;
+    margin: 0;
+}
+
+form .button {
+    padding: 12px 24px;
+    font-size: 18px;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ product.pname }}</h1>
+
+        <div class="section">
+            <p><strong>Price:</strong> ${{ product.price }}</p>
+            {% if product.is_trending %}
+                <p style="color: #e91e63;"><strong>🔥 Trending Product</strong></p>
+            {% endif %}
+        </div>
+
+        {% if category == 'Skincare' %}
+        <div class="section">
+            <h2>Skincare Details</h2>
+            <p><strong>Type:</strong> {{ product.type }}</p>
+            <p><strong>Fragrance Free:</strong> {{ 'Yes' if product.fragrance_free else 'No' }}</p>
+            <p><strong>Packaging:</strong> {{ product.packaging }}</p>
+            <p><strong>Natural or Organic:</strong> {{ 'Yes' if product.natural_or_organic else 'No' }}</p>
+            <p><strong>Skin Types:</strong> {{ product.skin_types | join(', ') }}</p>
+            <p><strong>Ingredients:</strong> {{ product.ingredients | join(', ') }}</p>
+
+
+        </div>
+        {% elif category == 'Haircare' %}
+        <div class="section">
+            <h2>Haircare Details</h2>
+            <p><strong>Fragrance Free:</strong> {{ 'Yes' if product.fragrance_free else 'No' }}</p>
+            <p><strong>Sulfate Free:</strong> {{ 'Yes' if product.sulfate_free else 'No' }}</p>
+            <p><strong>Packaging:</strong> {{ product.packaging }}</p>
+            <p><strong>Natural or Organic:</strong> {{ 'Yes' if product.natural_or_organic else 'No' }}</p>
+            <p><strong>Hair Types:</strong> {{ product.hair_types | join(', ') }}</p>
+            <p><strong>Scalp Types:</strong> {{ product.scalp_types | join(', ') }}</p>
+            <p><strong>Ingredients:</strong> {{ product.ingredients | join(', ') }}</p>
+
+
+        </div>
+        {% elif category == 'Fragrance' %}
+        <div class="section">
+            <h2>Fragrance Details</h2>
+            <p><strong>Alcohol Free:</strong> {{ 'Yes' if product.is_alcohol_free else 'No' }}</p>
+            <p><strong>Type:</strong> {{ product.fragrance_type }}</p>
+            <p><strong>Size (ml):</strong> {{ product.size_ml }}</p>
+            <p><strong>Lasting Hours:</strong> {{ product.lasting_hours }}</p>
+            <p><strong>Concentration:</strong> {{ product.concentration }}</p>
+            <p><strong>Seasons:</strong> {{ product.seasons | join(', ') }}</p>
+            <p><strong>Recommended Time:</strong> {{ product.times | join(', ') }}</p>
+            <p><strong>Scent Notes:</strong> {{ product.scent_notes | join(', ') }}</p>
+            <p><strong>Gender:</strong> {{ product.genders | join(', ') }}</p>
+        </div>
+        {% endif %}
+
+        <form action="{{ url_for('add_to_cart', product_id=product.product_id) }}" method="post">
+            <input type="hidden" name="product_id" value="{{ product.product_id }}">
+            <label>Quantity:
+                <input type="number" name="quantity" min="1" value="1" required>
+            </label>
+            <br><br>
+            <button class="button" type="submit">Add to Cart</button>
+        </form>
+    </div>
+</body>
+</html>
