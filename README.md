@@ -147,4 +147,5 @@ project/
 
 ## Author
 Maisam AbuJaber
+Raghad Qadus
 Cosmetics Store Project - DataBase Course
