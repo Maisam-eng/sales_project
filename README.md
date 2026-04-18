@@ -111,31 +111,6 @@ http://127.0.0.1:5000/
 
 ---
 
-## Project Structure
-
-project/
-├── app.py
-├── templates/
-│   ├── index.html
-│   ├── products.html
-│   ├── skincare.html
-│   ├── haircare.html
-│   ├── fragrance.html
-│   ├── cart.html
-│   ├── checkout.html
-│   ├── login.html
-│   ├── signup.html
-│   ├── manager.html
-│   └── ...
-│
-├── static/
-│   |
-│   └── images/
-│
-└── README.md
-
----
-
 ## Future Improvements
 - Add password hashing (bcrypt)
 - Improve UI with React or Bootstrap
